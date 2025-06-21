@@ -1,0 +1,5 @@
+{
+  "min-len": 15,
+  "max-len": 90,
+  "debug": true
+}
