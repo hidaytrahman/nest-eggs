@@ -1,0 +1,13 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "firstName": "John",
+      "lastName": "Doe",
+      "username": "hidaytrahman",
+      "password": "password123",
+      "type": "admin",
+      "email": ""
+    }
+  ]
+}

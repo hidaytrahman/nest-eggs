@@ -22,7 +22,7 @@ export class AuthService {
 
     // TODO: Generate a JWT and return it here
     const payload = {
-      sub: user.userId,
+      sub: user.id,
       username: user.username,
       type: user.type,
     };
@@ -36,14 +36,23 @@ export class AuthService {
   async validateUser(username: string, pass: string): Promise<any> {
     const user = await this.usersService.findOne(username);
     if (user && user.password === pass) {
-      const { password, ...result } = user;
+      const { ...result } = user;
       return result;
     }
     return null;
   }
 
-  async login(user: any) {
-    const payload = { username: user.username, sub: user.userId };
+  async login(user: { username: string }) {
+    // Ensure user comes from the new JSON DB
+    const dbUser = await this.usersService.findOne(user.username);
+    if (!dbUser) {
+      throw new UnauthorizedException("User not found");
+    }
+    const payload = {
+      sub: dbUser.id,
+      username: dbUser.username,
+      type: dbUser.type,
+    };
     return {
       access_token: this.jwtService.sign(payload),
     };
