@@ -1,7 +1,13 @@
-import { Controller, Get, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
-import { AppService } from './app.service';
+import {
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  UseGuards,
+} from "@nestjs/common";
+import { AppService } from "./app.service";
 // import { AuthGuard } from './guards/auth.guard';
-@Controller('api')
+@Controller("api")
 // @UseGuards(AuthGuard)
 export class AppController {
   constructor(private readonly appService: AppService) {}
@@ -14,7 +20,7 @@ export class AppController {
       throw new HttpException(
         {
           status: HttpStatus.FORBIDDEN,
-          error: 'This is a custom message from get Hello',
+          error: "This is a custom message from get Hello",
         },
         HttpStatus.FORBIDDEN,
         {

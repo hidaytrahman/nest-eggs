@@ -1,8 +1,12 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
-import * as USERS_JSON from '../data/users.json';
-import { NotPositiveResponse, User, UsersResponseType } from 'src/types/user.types';
-import { QuerySearchUserDto } from 'src/dto/search-user.dto';
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import * as bcrypt from "bcrypt";
+import * as USERS_JSON from "../data/users.json";
+import {
+  NotPositiveResponse,
+  User,
+  UsersResponseType,
+} from "src/types/user.types";
+import { QuerySearchUserDto } from "src/dto/search-user.dto";
 
 @Injectable()
 export class UserService {
@@ -13,16 +17,20 @@ export class UserService {
 
   //   find user by id
   findUserById(param: number): User | NotPositiveResponse {
-    const users: User | undefined = USERS_JSON.users.find((user) => user.id == param);
+    const users: User | undefined = USERS_JSON.users.find(
+      (user) => user.id == param,
+    );
     if (users) return users;
 
     return {
-      message: 'No user found',
+      message: "No user found",
     };
   }
 
   //   find by query params
-  findUsersByQueryParams(params: QuerySearchUserDto): UsersResponseType | NotPositiveResponse {
+  findUsersByQueryParams(
+    params: QuerySearchUserDto,
+  ): UsersResponseType | NotPositiveResponse {
     const users: User[] | [] = USERS_JSON.users.filter(
       (user) =>
         params?.firstName?.toLowerCase() === user.firstName.toLowerCase() ||
@@ -33,7 +41,7 @@ export class UserService {
 
     if (users?.length === 0) {
       return {
-        message: 'No user found!!!',
+        message: "No user found!!!",
       };
     }
 
@@ -43,7 +51,7 @@ export class UserService {
     };
   }
 
-   createUser(createUserDto) {
+  createUser(createUserDto) {
     console.log(createUserDto);
     // const saltOrRounds = 10;
     // const password = 'random_password';
@@ -51,7 +59,7 @@ export class UserService {
     // console.log(" hash ", hash)
 
     return {
-      message: 'User created',
+      message: "User created",
     };
   }
 }

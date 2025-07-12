@@ -17,6 +17,7 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
-    "resolveJsonModule": true // here is the important line, this will help VSCode to autocomplete and suggest quick-fixes
+    "resolveJsonModule": true, // here is the important line, this will help VSCode to autocomplete and suggest quick-fixes
+    "esModuleInterop": true
   }
 }

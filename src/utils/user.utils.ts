@@ -1,6 +1,6 @@
 // user utils
 
-import { User } from 'src/types/user.types';
+import { User } from "src/types/user.types";
 
 export const getFullName = (
   user: User,
@@ -13,7 +13,7 @@ export const getFullName = (
     return `Mr ${user.firstName} ${user.lastName}`;
   } else {
     return {
-      message: 'No user',
+      message: "No user",
     };
   }
 };

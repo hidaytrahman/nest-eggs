@@ -1,16 +1,16 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { APP_FILTER, APP_GUARD } from '@nestjs/core';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { UserController } from './controllers/user.controller';
-import { UserService } from './services/user.service';
-import { LoggerMiddleware } from './middlewares/logger.middleware';
-import { HttpExceptionFilter } from './exceptions/http-exception.filter';
-import { RolesGuard } from './guards/roles.guard';
-import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
-import { AuthService } from './auth/auth.service';
-import { AuthController } from './auth/auth.controller';
+import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
+import { APP_FILTER, APP_GUARD } from "@nestjs/core";
+import { AppController } from "./app.controller";
+import { AppService } from "./app.service";
+import { UserController } from "./controllers/user.controller";
+import { UserService } from "./services/user.service";
+import { LoggerMiddleware } from "./middlewares/logger.middleware";
+import { HttpExceptionFilter } from "./exceptions/http-exception.filter";
+import { RolesGuard } from "./guards/roles.guard";
+import { AuthModule } from "./auth/auth.module";
+import { UsersModule } from "./users/users.module";
+import { AuthService } from "./auth/auth.service";
+import { AuthController } from "./auth/auth.controller";
 
 @Module({
   imports: [AuthModule, UsersModule],
@@ -19,7 +19,7 @@ import { AuthController } from './auth/auth.controller';
     AppService,
     UserService,
     AuthService,
-    
+
     /* Global-scoped filters are used across the whole application, 
     for every controller and every route handler. 
     In terms of dependency injection, global filters registered from 
@@ -40,6 +40,6 @@ import { AuthController } from './auth/auth.controller';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggerMiddleware).forRoutes('*');
+    consumer.apply(LoggerMiddleware).forRoutes("*");
   }
 }

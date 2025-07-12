@@ -1,5 +1,10 @@
-import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from '@nestjs/common';
-import { Request, Response } from 'express';
+import {
+  ExceptionFilter,
+  Catch,
+  ArgumentsHost,
+  HttpException,
+} from "@nestjs/common";
+import { Request, Response } from "express";
 
 // Transform the error response
 @Catch(HttpException)
@@ -9,7 +14,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
     const status = exception.getStatus();
-    const exceptionMsg = exception['response']['message'];
+    const exceptionMsg = exception["response"]["message"];
 
     // console.log(" is array or not ", typeof )
 
@@ -19,11 +24,14 @@ export class HttpExceptionFilter implements ExceptionFilter {
       timestamp: new Date().toISOString(),
       path: request.url,
       // reading message if its string error or from getting the first error message from the array
-      message: typeof exceptionMsg === 'string' ? exceptionMsg : (exception['response']['message'][0] as string),
+      message:
+        typeof exceptionMsg === "string"
+          ? exceptionMsg
+          : (exception["response"]["message"][0] as string),
       details: {
-        author: 'hidayt',
+        author: "hidayt",
         name: exception.name,
-        ...exception['response'],
+        ...exception["response"],
       },
     });
   }

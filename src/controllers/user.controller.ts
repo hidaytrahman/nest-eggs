@@ -1,10 +1,25 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, Query, UseGuards, ValidationPipe } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Query,
+  UseGuards,
+  ValidationPipe,
+} from '@nestjs/common';
 // import { Roles } from 'src/decorators/roles.decorator';
 import { QuerySearchUserDto } from 'src/dto/search-user.dto';
 import { CreateUserDto } from 'src/dto/create-user.dto';
 // import { RolesGuard } from 'src/guards/roles.guard';
 import { UserService } from 'src/services/user.service';
-import { NotPositiveResponse, Role, User, UsersResponseType } from 'src/types/user.types';
+import {
+  NotPositiveResponse,
+  Role,
+  User,
+  UsersResponseType,
+} from 'src/types/user.types';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('api/users')
@@ -33,7 +48,7 @@ export class UserController {
   @Get('/search')
   @UseGuards(JwtAuthGuard)
   findUserByQuery(
-    @Query(new ValidationPipe({ transform: true })) query: QuerySearchUserDto,
+    @Query(new ValidationPipe({ transform: true })) query: QuerySearchUserDto
   ): UsersResponseType | NotPositiveResponse {
     console.log('query ', query);
 

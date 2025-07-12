@@ -1,9 +1,9 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import * as USERS_JSON from '../data/users.json';
-import { UserController } from './user.controller';
-import { UserService } from 'src/services/user.service';
+import { Test, TestingModule } from "@nestjs/testing";
+import * as USERS_JSON from "../data/users.json";
+import { UserController } from "./user.controller";
+import { UserService } from "src/services/user.service";
 
-describe('UserController', () => {
+describe("UserController", () => {
   let userController: UserController;
 
   beforeEach(async () => {
@@ -15,8 +15,8 @@ describe('UserController', () => {
     userController = app.get<UserController>(UserController);
   });
 
-  describe('root', () => {
-    it('should return all users', () => {
+  describe("root", () => {
+    it("should return all users", () => {
       expect(userController.fetchAllUsers()).toBe(USERS_JSON);
     });
   });

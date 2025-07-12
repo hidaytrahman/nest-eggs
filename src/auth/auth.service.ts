@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { UsersService } from 'src/users/users.service';
-import { JwtService } from '@nestjs/jwt';
+import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { UsersService } from "src/users/users.service";
+import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
 export class AuthService {
@@ -10,16 +10,22 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-
   // this is without passport
-  async signIn(username: string, pass: string): Promise<{ access_token: string }> {
+  async signIn(
+    username: string,
+    pass: string,
+  ): Promise<{ access_token: string }> {
     const user = await this.usersService.findOne(username);
     if (user?.password !== pass) {
       throw new UnauthorizedException();
     }
 
     // TODO: Generate a JWT and return it here
-    const payload = { sub: user.userId, username: user.username, type: user.type };
+    const payload = {
+      sub: user.userId,
+      username: user.username,
+      type: user.type,
+    };
 
     return {
       access_token: await this.jwtService.signAsync(payload),
