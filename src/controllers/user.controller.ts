@@ -1,70 +1,31 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  ParseIntPipe,
-  Post,
-  Query,
-  UseGuards,
-  ValidationPipe,
-} from '@nestjs/common';
-// import { Roles } from 'src/decorators/roles.decorator';
-import { QuerySearchUserDto } from 'src/dto/search-user.dto';
-import { CreateUserDto } from 'src/dto/create-user.dto';
-// import { RolesGuard } from 'src/guards/roles.guard';
-import { UserService } from 'src/services/user.service';
-import {
-  NotPositiveResponse,
-  Role,
-  User,
-  UsersResponseType,
-} from 'src/types/user.types';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { Controller, Get, Param, Query } from "@nestjs/common";
+import { UsersService, User } from "../users/users.service";
 
-@Controller('api/users')
+@Controller("users")
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly usersService: UsersService) {}
 
-  // fetch all users
+  // Find user by ID
+  @Get(":id")
+  async findById(@Param("id") id: string): Promise<User | null> {
+    const userId = Number(id);
+    const users: User[] = await this.usersService.findAll();
+    return users.find((user) => user.id === userId) || null;
+  }
+
+  // Search users by username or type
   @Get()
-  @UseGuards(JwtAuthGuard)
-  // @UseGuards(RolesGuard)
-  // @Roles(Role.Admin) // Only admins can access this route
-  fetchAllUsers(): UsersResponseType {
-    return this.userService.fetchAllUsers();
+  async searchUsers(
+    @Query("username") username?: string,
+    @Query("type") type?: string,
+  ): Promise<User[]> {
+    let users: User[] = await this.usersService.findAll();
+    if (username) {
+      users = users.filter((user) => user.username.includes(username));
+    }
+    if (type) {
+      users = users.filter((user) => user.type === type);
+    }
+    return users;
   }
-
-  // find user
-
-  @Get('/find/:id')
-  @UseGuards(JwtAuthGuard)
-  findUser(@Param('id', ParseIntPipe) params): User | NotPositiveResponse {
-    return this.userService.findUserById(params);
-  }
-
-  // Search users
-  //  Can be search with age, email, firstName
-  @Get('/search')
-  @UseGuards(JwtAuthGuard)
-  findUserByQuery(
-    @Query(new ValidationPipe({ transform: true })) query: QuerySearchUserDto
-  ): UsersResponseType | NotPositiveResponse {
-    console.log('query ', query);
-
-    return this.userService.findUsersByQueryParams(query);
-  }
-
-  // create a user
-  @Post()
-  // apply role guards
-  @UseGuards(JwtAuthGuard)
-  // @Roles(Role.Admin)
-  createUser(@Body() createUserDto: CreateUserDto) {
-    this.userService.createUser(createUserDto);
-  }
-
-  // update a user
-
-  // delete a user
 }

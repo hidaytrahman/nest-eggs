@@ -3,7 +3,7 @@ import { APP_FILTER, APP_GUARD } from "@nestjs/core";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { UserController } from "./controllers/user.controller";
-import { UserService } from "./services/user.service";
+// import { UserService } from "./services/user.service";
 import { LoggerMiddleware } from "./middlewares/logger.middleware";
 import { HttpExceptionFilter } from "./exceptions/http-exception.filter";
 import { RolesGuard } from "./guards/roles.guard";
@@ -17,7 +17,7 @@ import { AuthController } from "./auth/auth.controller";
   controllers: [AppController, UserController, AuthController],
   providers: [
     AppService,
-    UserService,
+    // UserService,
     AuthService,
 
     /* Global-scoped filters are used across the whole application, 
