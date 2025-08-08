@@ -1,11 +1,11 @@
 export enum GenderType {
-  Male = 'male',
-  Female = 'female',
+  Male = "male",
+  Female = "female",
 }
 
 export enum Role {
-  User = 'user',
-  Admin = 'admin',
+  User = "user",
+  Admin = "admin",
 }
 
 export type SearchUserByQueryType = {

@@ -1,6 +1,15 @@
-import { Type } from 'class-transformer';
-import { IsEmail, IsInt, Min, Max, IsEnum, IsOptional, IsNumberString, IsAlpha } from 'class-validator';
-import { GenderType } from 'src/types/user.types';
+import { Type } from "class-transformer";
+import {
+  IsEmail,
+  IsInt,
+  Min,
+  Max,
+  IsEnum,
+  IsOptional,
+  IsNumberString,
+  IsAlpha,
+} from "class-validator";
+import { GenderType } from "src/types/user.types";
 
 export class QuerySearchUserDto {
   @IsEnum(GenderType)

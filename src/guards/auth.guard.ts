@@ -1,10 +1,13 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  UnauthorizedException,
+} from "@nestjs/common";
 // import { Observable } from 'rxjs';
-import { JwtService } from '@nestjs/jwt';
-import { jwtConstants } from 'src/auth/constants';
+import { JwtService } from "@nestjs/jwt";
+import { jwtConstants } from "src/auth/constants";
 // TODO: This guard was initially added only with JWT
 // TODO:  currently its not being used
 @Injectable()
@@ -15,7 +18,7 @@ export class AuthGuard implements CanActivate {
     const token = this.extractTokenFromHeader(request);
 
     if (!token) {
-      throw new UnauthorizedException('Invalid token or not exist');
+      throw new UnauthorizedException("Invalid token or not exist");
     }
 
     console.log({ token });
@@ -26,9 +29,9 @@ export class AuthGuard implements CanActivate {
       });
       // 💡 We're assigning the payload to the request object here
       // so that we can access it in our route handlers
-      request['user'] = payload;
+      request["user"] = payload;
     } catch {
-      throw new UnauthorizedException('You are not authorized');
+      throw new UnauthorizedException("You are not authorized");
     }
     return true;
   }
@@ -40,7 +43,7 @@ export class AuthGuard implements CanActivate {
       };
     },
   ): string | undefined {
-    const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    return type === 'Bearer' ? token : undefined;
+    const [type, token] = request.headers.authorization?.split(" ") ?? [];
+    return type === "Bearer" ? token : undefined;
   }
 }

@@ -10,7 +10,7 @@ import {
   MinLength,
   MaxLength,
   // IsBoolean,
-} from 'class-validator';
+} from "class-validator";
 
 export class CreateUserDto {
   @IsString()
