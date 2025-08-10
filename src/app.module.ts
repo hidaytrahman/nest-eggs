@@ -24,7 +24,7 @@ import { CatsModule } from "./features/cats.module";
       // Replace <db_password> with your actual database password
       // Ensure you have the correct connection string for your MongoDB instance
       // get from environment variable or config file
-      "mongodb+srv://hidaytrahman:5qCUa79xCVA4e7PE@nest-eggs.v2c9wgi.mongodb.net/?retryWrites=true&w=majority&appName=nest-eggs",
+      `mongodb+srv://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@nest-eggs.v2c9wgi.mongodb.net/?retryWrites=true&w=majority&appName=nest-eggs`,
     ),
   ],
   controllers: [AppController, UserController, AuthController],
