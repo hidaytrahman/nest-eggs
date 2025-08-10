@@ -13,3 +13,5 @@ jspm_packages/
 .repl
 # Optional VS Code settings
 .DS_Store
+
+.env
