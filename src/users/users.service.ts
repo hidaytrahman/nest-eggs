@@ -1,37 +1,80 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ConflictException } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { Model } from "mongoose";
+import * as bcrypt from "bcrypt";
+import { User, UserDocument } from "./schemas/user.schema";
 
-// This should be a real class/interface representing a user entity
-export type User = {
-  userId: number;
+export interface UserPayload {
+  userId: string;
   username: string;
-  password: string;
-  type: 'user' | 'admin';
-};
+  email: string;
+  type: "user" | "admin";
+}
 
 @Injectable()
 export class UsersService {
-  private readonly users = [
-    {
-      userId: 1,
-      username: 'john',
-      password: 'changeme',
-      type: 'user',
-    },
-    {
-      userId: 2,
-      username: 'maria',
-      password: 'guess',
-      type: 'user',
-    },
-    {
-      userId: 3,
-      username: 'hidayt',
-      password: 'rahman',
-      type: 'admin',
-    },
-  ];
+  constructor(
+    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+  ) {}
 
-  async findOne(username: string): Promise<any | undefined> {
-    return this.users.find((user) => user.username === username);
+  async findOne(username: string): Promise<UserDocument | null> {
+    return this.userModel.findOne({ username, isActive: true }).exec();
+  }
+
+  async findOneByEmail(email: string): Promise<UserDocument | null> {
+    return this.userModel.findOne({ email, isActive: true }).exec();
+  }
+
+  async findById(id: string): Promise<UserDocument | null> {
+    return this.userModel.findById(id).exec();
+  }
+
+  async create(userData: {
+    username: string;
+    password: string;
+    email: string;
+    firstName: string;
+    lastName?: string;
+    age?: number;
+    type?: "user" | "admin";
+  }): Promise<UserDocument> {
+    // Check if user already exists
+    const existingUser = await this.userModel.findOne({
+      $or: [{ username: userData.username }, { email: userData.email }],
+    });
+
+    if (existingUser) {
+      if (existingUser.username === userData.username) {
+        throw new ConflictException("Username already exists");
+      }
+      if (existingUser.email === userData.email) {
+        throw new ConflictException("Email already exists");
+      }
+    }
+
+    // Hash password
+    const hashedPassword = await this.hashPassword(userData.password);
+
+    // Create user
+    const user = new this.userModel({
+      ...userData,
+      password: hashedPassword,
+      type: userData.type || "user",
+      isActive: true,
+    });
+
+    return user.save();
+  }
+
+  async hashPassword(password: string): Promise<string> {
+    const saltRounds = 10;
+    return bcrypt.hash(password, saltRounds);
+  }
+
+  async comparePassword(
+    plainPassword: string,
+    hashedPassword: string,
+  ): Promise<boolean> {
+    return bcrypt.compare(plainPassword, hashedPassword);
   }
 }
