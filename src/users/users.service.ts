@@ -36,6 +36,19 @@ export class UsersService {
     firstName: string;
     lastName?: string;
     age?: number;
+    gender?: string;
+    phone?: string;
+    dateOfBirth?: string;
+    address?: {
+      street?: string;
+      city?: string;
+      state?: string;
+      zipCode?: string;
+      country?: string;
+    };
+    bio?: string;
+    avatar?: string;
+    website?: string;
     type?: "user" | "admin";
   }): Promise<UserDocument> {
     // Check if user already exists
@@ -55,14 +68,59 @@ export class UsersService {
     // Hash password
     const hashedPassword = await this.hashPassword(userData.password);
 
-    // Create user
-    const user = new this.userModel({
+    // Prepare user data
+    const userDataToSave: any = {
       ...userData,
       password: hashedPassword,
       type: userData.type || "user",
       isActive: true,
-    });
+    };
 
+    // Convert dateOfBirth string to Date if provided
+    if (userData.dateOfBirth) {
+      userDataToSave.dateOfBirth = new Date(userData.dateOfBirth);
+    }
+
+    // Create user
+    const user = new this.userModel(userDataToSave);
+
+    return user.save();
+  }
+
+  async updateProfile(
+    userId: string,
+    updateData: {
+      firstName?: string;
+      lastName?: string;
+      age?: number;
+      gender?: string;
+      phone?: string;
+      dateOfBirth?: string;
+      address?: {
+        street?: string;
+        city?: string;
+        state?: string;
+        zipCode?: string;
+        country?: string;
+      };
+      bio?: string;
+      avatar?: string;
+      website?: string;
+    },
+  ): Promise<UserDocument> {
+    const user = await this.findById(userId);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Convert dateOfBirth string to Date if provided
+    const updateDataToSave: any = { ...updateData };
+    if (updateData.dateOfBirth) {
+      updateDataToSave.dateOfBirth = new Date(updateData.dateOfBirth);
+    }
+
+    // Update user
+    Object.assign(user, updateDataToSave);
     return user.save();
   }
 

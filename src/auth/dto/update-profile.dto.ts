@@ -1,21 +1,19 @@
 import {
   IsString,
   IsEmail,
-  IsNotEmpty,
+  IsOptional,
   MinLength,
   MaxLength,
-  IsOptional,
   IsInt,
   Min,
   Max,
   IsEnum,
   IsDateString,
-  IsPhoneNumber,
   ValidateNested,
   IsObject,
 } from "class-validator";
 import { Type } from "class-transformer";
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { ApiPropertyOptional } from "@nestjs/swagger";
 
 class AddressDto {
   @ApiPropertyOptional({ example: "123 Main St", description: "Street address" })
@@ -44,28 +42,11 @@ class AddressDto {
   country?: string;
 }
 
-export class SignUpDto {
-  @ApiProperty({ example: "john_doe", description: "Unique username" })
+export class UpdateProfileDto {
+  @ApiPropertyOptional({ example: "John", description: "User first name" })
   @IsString()
-  @IsNotEmpty()
-  username: string;
-
-  @ApiProperty({ example: "password123", description: "User password (6-50 characters)" })
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(6)
-  @MaxLength(50)
-  password: string;
-
-  @ApiProperty({ example: "john.doe@example.com", description: "User email address" })
-  @IsEmail()
-  @IsNotEmpty()
-  email: string;
-
-  @ApiProperty({ example: "John", description: "User first name" })
-  @IsString()
-  @IsNotEmpty()
-  firstName: string;
+  @IsOptional()
+  firstName?: string;
 
   @ApiPropertyOptional({ example: "Doe", description: "User last name" })
   @IsString()

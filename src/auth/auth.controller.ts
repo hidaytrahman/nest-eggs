@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Request, UseGuards, Body } from "@nestjs/common";
+import { Controller, Get, Post, Put, Request, UseGuards, Body } from "@nestjs/common";
 import {
   ApiTags,
   ApiOperation,
@@ -6,11 +6,18 @@ import {
   ApiBearerAuth,
   ApiBody,
 } from "@nestjs/swagger";
-import { AuthService, LoginResponse, UserPayload, SignUpResponse } from "./auth.service";
+import {
+  AuthService,
+  LoginResponse,
+  UserPayload,
+  SignUpResponse,
+  ProfileResponse,
+} from "./auth.service";
 import { LocalAuthGuard } from "./local-auth.guard";
 import { JwtAuthGuard } from "./jwt-auth.guard";
 import { LoginDto } from "./dto/login.dto";
 import { SignUpDto } from "./dto/signup.dto";
+import { UpdateProfileDto } from "./dto/update-profile.dto";
 
 @ApiTags("auth")
 @Controller("auth")
@@ -49,9 +56,36 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth("JWT-auth")
   @ApiOperation({ summary: "Get current user profile" })
-  @ApiResponse({ status: 200, description: "Profile retrieved successfully" })
+  @ApiResponse({
+    status: 200,
+    description: "Profile retrieved successfully",
+    type: Object,
+  })
   @ApiResponse({ status: 401, description: "Unauthorized" })
-  getProfile(@Request() req) {
-    return req.user;
+  @ApiResponse({ status: 404, description: "User not found" })
+  async getProfile(
+    @Request() req: { user: UserPayload },
+  ): Promise<ProfileResponse> {
+    return this.authService.getProfile(req.user.userId);
+  }
+
+  @Put("profile")
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth("JWT-auth")
+  @ApiOperation({ summary: "Update user profile" })
+  @ApiBody({ type: UpdateProfileDto })
+  @ApiResponse({
+    status: 200,
+    description: "Profile updated successfully",
+    type: Object,
+  })
+  @ApiResponse({ status: 401, description: "Unauthorized" })
+  @ApiResponse({ status: 404, description: "User not found" })
+  @ApiResponse({ status: 400, description: "Bad request - validation error" })
+  async updateProfile(
+    @Request() req: { user: UserPayload },
+    @Body() updateProfileDto: UpdateProfileDto,
+  ): Promise<ProfileResponse> {
+    return this.authService.updateProfile(req.user.userId, updateProfileDto);
   }
 }
