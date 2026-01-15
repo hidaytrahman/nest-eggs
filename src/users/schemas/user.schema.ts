@@ -70,6 +70,15 @@ export class User {
 
   @Prop({ default: false })
   emailVerified: boolean;
+
+  @Prop()
+  passwordResetToken?: string;
+
+  @Prop()
+  passwordResetExpires?: Date;
+
+  @Prop()
+  emailVerificationToken?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -3,6 +3,10 @@ import { UsersService } from "src/users/users.service";
 import { JwtService } from "@nestjs/jwt";
 import { SignUpDto } from "./dto/signup.dto";
 import { UpdateProfileDto } from "./dto/update-profile.dto";
+import { ChangePasswordDto } from "./dto/change-password.dto";
+import { ChangeEmailDto } from "./dto/change-email.dto";
+import { ForgotPasswordDto } from "./dto/forgot-password.dto";
+import { ResetPasswordDto } from "./dto/reset-password.dto";
 import { UserDocument } from "src/users/schemas/user.schema";
 
 export interface UserPayload {
@@ -172,6 +176,100 @@ export class AuthService {
     };
     return {
       access_token: await this.jwtService.signAsync(payload),
+    };
+  }
+
+  async changePassword(
+    userId: string,
+    changePasswordDto: ChangePasswordDto,
+  ): Promise<{ message: string }> {
+    await this.usersService.changePassword(
+      userId,
+      changePasswordDto.currentPassword,
+      changePasswordDto.newPassword,
+    );
+    return { message: "Password changed successfully" };
+  }
+
+  async changeEmail(
+    userId: string,
+    changeEmailDto: ChangeEmailDto,
+  ): Promise<{ message: string; email: string }> {
+    const user = await this.usersService.changeEmail(
+      userId,
+      changeEmailDto.newEmail,
+      changeEmailDto.password,
+    );
+    return {
+      message: "Email changed successfully. Please verify your new email.",
+      email: user.email,
+    };
+  }
+
+  async forgotPassword(
+    forgotPasswordDto: ForgotPasswordDto,
+  ): Promise<{ message: string }> {
+    const resetToken = await this.usersService.generatePasswordResetToken(
+      forgotPasswordDto.email,
+    );
+
+    // In production, send email with reset token
+    // For now, we'll just return success message
+    // TODO: Implement email service to send reset link
+    if (resetToken) {
+      // Log token for development (remove in production)
+      console.log(`Password reset token for ${forgotPasswordDto.email}: ${resetToken}`);
+    }
+
+    // Always return success message for security (don't reveal if email exists)
+    return {
+      message:
+        "If the email exists, a password reset link has been sent to your email.",
+    };
+  }
+
+  async resetPassword(
+    resetPasswordDto: ResetPasswordDto,
+  ): Promise<{ message: string }> {
+    await this.usersService.resetPassword(
+      resetPasswordDto.token,
+      resetPasswordDto.newPassword,
+    );
+    return { message: "Password reset successfully" };
+  }
+
+  async deactivateAccount(userId: string): Promise<{ message: string }> {
+    await this.usersService.deactivateAccount(userId);
+    return { message: "Account deactivated successfully" };
+  }
+
+  async reactivateAccount(userId: string): Promise<{ message: string }> {
+    await this.usersService.reactivateAccount(userId);
+    return { message: "Account reactivated successfully" };
+  }
+
+  async deleteAccount(userId: string): Promise<{ message: string }> {
+    await this.usersService.deleteAccount(userId);
+    return { message: "Account deleted successfully" };
+  }
+
+  async verifyEmail(token: string): Promise<{ message: string }> {
+    await this.usersService.verifyEmail(token);
+    return { message: "Email verified successfully" };
+  }
+
+  async resendVerificationEmail(
+    userId: string,
+  ): Promise<{ message: string; token: string }> {
+    const token = await this.usersService.generateEmailVerificationToken(userId);
+
+    // In production, send email with verification token
+    // TODO: Implement email service to send verification link
+    console.log(`Email verification token for user ${userId}: ${token}`);
+
+    return {
+      message: "Verification email sent successfully",
+      token, // Remove token from response in production
     };
   }
 }
